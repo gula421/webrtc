@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>B, initial connection</title>
+</head>
+<body>
+	<input id="idToConnect" placeholder="Enter the id to connect"/>
+	<button id="btnConnect">Connect</button>
+	<br>
+	<br>
+	<br>
+	<p>Local</p>
+	<video id="videoLocal" autoplay playsinline></video>
+	<p>Remote</p>
+	<video id="videoRemote" autoplay playsinline></video>
+	<br>
+	<button id="btnCall">Call</button>
+	<br>
+	<input type="text" name="msg" id="msg" placeholder="Enter a message"/>
+	<button id="btnSend">Send</button>
+	<div id="history">start to talk</div>
+
+	<script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+	<script src="./js/b.js"></script>
+</body>
+
+</html>
