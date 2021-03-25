@@ -83,12 +83,12 @@ async function call() {
   if (audioTracks.length > 0) {
     console.log(`Using audio device: ${audioTracks[0].label}`);
   }
-  // const configuration = {};
-  const configuration = {
-  "iceServers": {
-          "url": "stun3.l.google.com:19302"
-      }
-  };
+  const configuration = {};
+  // const configuration = {
+  // "iceServers": {
+  //         "url": "stun3.l.google.com:19302"
+  //     }
+  // };
 
   console.log('RTCPeerConnection configuration:', configuration);
   pc1 = new RTCPeerConnection(configuration);
