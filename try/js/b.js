@@ -6,8 +6,8 @@ const btnConnect = document.getElementById('btnConnect');
 const btnSend = document.getElementById('btnSend');
 const idToConnect = document.getElementById('idToConnect');
 const videoLocal = document.getElementById('videoLocal');
-const btnCall = document.getElementById('btnCall');
 const videoRemote = document.getElementById('videoRemote');
+const status = document.getElementById('status');
 
 btnSend.addEventListener('click', setSendText);
 btnConnect.addEventListener('click', join);
@@ -17,6 +17,7 @@ var lastId = null;
 var peer = null;
 var conn = null;
 var currentMsg = '';
+var localStream = null;
 
 // video
 const constraints = window.constraints = {
@@ -34,10 +35,23 @@ function setSendText(){
 	// send text
 	conn.send(currentMsg);
 	console.log('send: '+currentMsg);
+
+	// clear current text
+	msg.value = '';
 }
 
 function addReceivedMessage(message){
-	if(message){
+	// stop call
+	if (message ===conn.peer+'stopCall'){
+		const tracks = localStream.getTracks();
+
+		tracks.forEach(function(track) {
+		    track.stop();
+		});
+
+		videoLocal.srcObject = null;
+		videoRemote.srcObject = null;
+	} else if(message){ // normal message
 		msgSoFar =msgSoFar +  message;
 		h2.innerHTML = `<p>${msgSoFar}</p>`;
 	}
@@ -56,7 +70,7 @@ function initialize(){
 
 async function handleStream(call){
 	// get local medaiStream
-	const localStream = await navigator.mediaDevices.getUserMedia(constraints);
+	localStream = await navigator.mediaDevices.getUserMedia(constraints);
 
 	// set local video
 	videoLocal.srcObject = localStream;
@@ -92,6 +106,7 @@ function join(){
 	// handle connection
 	conn.on('open', function(){
 		console.log('connected');
+		status.innerText = 'connected to: ' + conn.peer;
 	})
 
 	conn.on('data', addReceivedMessage);

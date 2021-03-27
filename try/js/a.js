@@ -8,16 +8,19 @@ const status = document.getElementById('status');
 const videoLocal = document.getElementById('videoLocal');
 const btnCall = document.getElementById('btnCall');
 const videoRemote = document.getElementById('videoRemote');
+const btnHangup = document.getElementById('btnHangup');
 
 // eventListener
 btn.addEventListener('click', setSendText);
 btnCall.addEventListener('click', startCall);
+btnHangup.addEventListener('click', endCall);
 
 // peer connetion
 var peer = null; // own peer object
 var conn = null; // connection
 var lastId = null;
 var currentMsg = '';
+var localStream = null;
 
 // video
 const constraints = window.constraints = {
@@ -30,12 +33,25 @@ function setSendText(){
 	if (msg){
 		// debugger;
 		currentMsg = 'A: '+ msg.value + '</br>';
-		msgSoFar += currentMsg;
-		h2.innerHTML = `<p>${msgSoFar}</p>`;
 	} 
+	msgSoFar += currentMsg;
+	h2.innerHTML = `<p>${msgSoFar}</p>`;
+
 	// send text
 	conn.send(currentMsg);
 	console.log('send: '+currentMsg);
+
+	// clear current text
+	msg.value = '';	
+}
+
+function sendCallInfo(message){
+	newMsg = message+ '</br>';
+	msgSoFar += newMsg;
+	h2.innerHTML = `<p>${msgSoFar}</p>`;
+
+	// send text
+	conn.send(newMsg);
 }
 
 function addReceivedMessage(message){
@@ -117,7 +133,7 @@ function handleConnection(connection){
 
 async function startCall(){
 	// get local mediaStream
-	const localStream = await navigator.mediaDevices.getUserMedia(constraints);
+	localStream = await navigator.mediaDevices.getUserMedia(constraints);
 	// set local video
 	videoLocal.srcObject = localStream;
 	window.stream = localStream;
@@ -128,6 +144,33 @@ async function startCall(){
 
 	// handle received stream
 	call.on('stream', handleRemoteVideo);
+
+	// add text to message
+	sendCallInfo('-- call started --');
+
+	btnHangup.disabled = false;
+	btnCall.disabled = true;
+}
+
+function endCall(){
+	const tracks = localStream.getTracks();
+
+	tracks.forEach(function(track) {
+	    track.stop();
+	});
+
+
+	// send a message to B to also stop video
+	conn.send(lastId+'stopCall');
+	// add text to message
+	sendCallInfo('-- call ended --');
+
+
+	videoLocal.srcObject = null;
+	videoRemote.srcObject = null;
+
+	btnCall.disabled = false;
+	btnHangup.disabled = true;
 }
 
 function handleRemoteVideo(stream){
