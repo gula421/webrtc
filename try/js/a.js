@@ -63,7 +63,7 @@ function addReceivedMessage(message){
 
 function initialize(){
 	// Create own peer object with connection to shared PeerJS server
-	peer = new Peer(null, {debug: 2});
+	peer = new Peer("aa123456789aa", {debug: 2});
 
 	// set Id when it's open
 	peer.on('open', getMyId);
