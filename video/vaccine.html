@@ -3,12 +3,20 @@
 <head>
 	<meta charset="utf-8">
 	<title>vaccine</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 </head>
 <body>
 	<div>
 		<video autoplay controls controlsList="nodownload">
 			<source src="rotkreuz.mp4" type="video/mp4">
 		</video>
+		<script type="text/javascript">
+			$(document).ready(function() {
+		     $("img").on("contextmenu",function(){
+		        return false;
+     		}); 
+ 		});
+		</script>
 	</div>
 </body>
 </html>
